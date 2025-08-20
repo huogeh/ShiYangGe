@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>时养阁 - 以食为养，顺时生活</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- 配置Tailwind自定义主题 - 更新为简约高级色调 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#5D4037',    // 深木色主调
+            secondary: '#8D6E63',  // 原木色
+            neutral: '#F5F5F5',    // 浅灰背景
+            cream: '#FAF5F0',      // 米白
+            dark: '#2D2D2D'        // 深灰文字
+          },
+          fontFamily: {
+            serif: ['"Noto Serif SC"', 'serif'],
+            sans: ['Inter', 'sans-serif']
+          },
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .hover-scale {
+        @apply transition-transform duration-300 ease-out;
+      }
+      .hover-scale:hover {
+        @apply transform scale-105;
+      }
+      .section-fade {
+        @apply opacity-0 translate-y-8 transition-all duration-700 ease-out;
+      }
+      .section-visible {
+        @apply opacity-100 translate-y-0;
+      }
+      .underline-animation {
+        @apply relative overflow-hidden;
+      }
+      .underline-animation::after {
+        content: '';
+        @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 ease-out;
+      }
+      .underline-animation:hover::after,
+      .underline-animation.active::after {
+        @apply w-full;
+      }
+      .cart-bubble {
+        @apply absolute -top-2 -right-2 bg-secondary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center transform transition-all duration-300;
+      }
+      .cart-bubble.adding {
+        @apply scale-150 opacity-0;
+      }
+      .season-card {
+        @apply bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 hover-scale;
+      }
+      .add-to-cart-animation {
+        animation: addToCart 0.6s ease-out;
+      }
+      @keyframes addToCart {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.5); }
+        100% { transform: scale(1); }
+      }
+      .product-detail-image {
+        @apply w-full h-auto object-cover rounded-lg;
+      }
+      .form-input {
+        @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary;
+      }
+      .added-to-cart {
+        @apply absolute -right-10 top-1/2 transform -translate-y-1/2 bg-green-500 text-white text-sm px-3 py-1 rounded-md shadow-lg transition-all duration-500 opacity-0;
+      }
+      .added-to-cart.show {
+        @apply right-10 opacity-100;
+      }
+      .announcement {
+        @apply bg-red-50 text-red-600 border-l-4 border-red-500 p-4 mb-6 inline-block animate-pulse;
+      }
+    }
+  </style>
+  
+  <!-- 引入字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-cream text-dark font-sans">
+  <!-- 导航栏 -->
+  <header id="navbar" class="fixed w-full bg-cream/90 backdrop-blur-sm z-50 transition-all duration-300">
+    <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="#" class="flex items-center space-x-2">
+        <img src="微信图片_2025-08-20_104830_530.jpg" alt="时养阁logo" class="h-10 w-auto">
+        <span class="text-primary text-3xl font-serif font-bold">时养阁</span>
+      </a>
+      
+      <!-- 桌面端导航 -->
+      <nav class="hidden md:flex items-center space-x-8">
+        <a href="#home" class="font-medium hover:text-primary transition-colors">首页</a>
+        <a href="#products" class="font-medium hover:text-primary transition-colors">产品</a>
+        <a href="#seasons" class="font-medium hover:text-primary transition-colors">顺时食养</a>
+        <a href="#story" class="font-medium hover:text-primary transition-colors">品牌故事</a>
+        <a href="#testimonials" class="font-medium hover:text-primary transition-colors">顾客评价</a>
+        <a href="#contact" class="font-medium hover:text-primary transition-colors">联系我们</a>
+      </nav>
+      
+      <!-- 用户功能区 -->
+      <div class="flex items-center space-x-6">
+        <button class="hover:text-primary transition-colors">
+          <i class="fa fa-search text-xl"></i>
+        </button>
+        <button id="userAccountToggle" class="hover:text-primary transition-colors">
+          <i class="fa fa-user text-xl"></i>
+        </button>
+        <button id="cartToggle" class="relative hover:text-primary transition-colors">
+          <i class="fa fa-shopping-cart text-xl"></i>
+          <span id="cartCount" class="cart-bubble">0</span>
+        </button>
+        <button id="mobileMenuToggle" class="md:hidden hover:text-primary transition-colors">
+          <i class="fa fa-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- 移动端菜单 -->
+    <div id="mobileMenu" class="md:hidden bg-cream absolute w-full left-0 top-full shadow-lg transform -translate-y-full opacity-0 transition-all duration-300 pointer-events-none">
+      <div class="container mx-auto px-4 py-6 flex flex-col space-y-4">
+        <a href="#home" class="font-medium py-2 hover:text-primary transition-colors mobile-link">首页</a>
+        <a href="#products" class="font-medium py-2 hover:text-primary transition-colors mobile-link">产品</a>
+        <a href="#seasons" class="font-medium py-2 hover:text-primary transition-colors mobile-link">顺时食养</a>
+        <a href="#story" class="font-medium py-2 hover:text-primary transition-colors mobile-link">品牌故事</a>
+        <a href="#testimonials" class="font-medium py-2 hover:text-primary transition-colors mobile-link">顾客评价</a>
+        <a href="#contact" class="font-medium py-2 hover:text-primary transition-colors mobile-link">联系我们</a>
+      </div>
+    </div>
+  </header>
+  <!-- 英雄区域 -->
+  <section id="home" class="pt-24 md:pt-32 pb-16 md:pb-24 section-fade">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 mb-10 md:mb-0">
+          <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-serif font-bold leading-tight mb-6">
+            以食为养，<br>顺时生活
+          </h1>
+          
+          <!-- 更新公告 -->
+          <div class="announcement">
+            <p class="font-medium">【更新公告】</p>
+            <p>新增秋季养生系列产品，限时8折优惠，欢迎选购！</p>
+          </div>
+          
+          <p class="text-lg md:text-xl mb-8 text-gray-700 max-w-lg">
+            时养阁秉承传统养生理念，精选天然食材，遵循四季规律，为您提供健康、美味的养生食品。
+          </p>
+          <a href="#products" class="inline-block bg-primary text-white px-8 py-3 rounded-md hover:bg-primary/90 transition-colors shadow-md hover:shadow-lg">
+            探索产品
+          </a>
+        </div>
+        <div class="md:w-1/2">
+          <img src="https://picsum.photos/id/1080/800/600" alt="时养阁养生食品展示" class="rounded-lg shadow-xl w-full hover-scale">
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- 特色区域 -->
+  <section class="py-16 bg-white section-fade">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center p-6 hover-scale">
+          <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fa fa-leaf text-primary text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">天然食材</h3>
+          <p class="text-gray-600">精选优质天然食材，无添加，保留食物本真味道</p>
+        </div>
+        <div class="text-center p-6 hover-scale">
+          <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fa fa-calendar text-primary text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">顺时养生</h3>
+          <p class="text-gray-600">遵循四季时令，提供适合当季的养生食品</p>
+        </div>
+        <div class="text-center p-6 hover-scale">
+          <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fa fa-heart text-primary text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">匠心制作</h3>
+          <p class="text-gray-600">传统工艺结合现代技术，用心做好每一款产品</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- 顺时食养区域 -->
+  <section id="seasons" class="py-16 bg-neutral section-fade">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-serif font-bold mb-4">顺时食养</h2>
+        <p class="text-gray-700 text-lg max-w-3xl mx-auto mb-6">应四时之变，调身心之衡</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- 春季 -->
+          <div class="season-card">
+            <div class="h-48 overflow-hidden">
+              <img src="https://picsum.photos/id/131/600/400" alt="春季养生" class="w-full h-full object-cover">
+            </div>
+            <div class="p-6">
+              <div class="flex items-center mb-4">
+                <i class="fa fa-leaf text-green-600 text-xl mr-2"></i>
+                <h3 class="text-xl font-serif font-semibold">春 · 养肝</h3>
+              </div>
+              <p class="text-gray-600">
+                宜食芽类蔬菜，助肝气升发，疏泄条达。春季养生应以疏肝理气、温补阳气为主，适当食用韭菜、春笋等应季食材。
+              </p>
+            </div>
+          </div>
+          
+          <!-- 夏季 -->
+          <div class="season-card">
+            <div class="h-48 overflow-hidden">
+              <img src="https://picsum.photos/id/129/600/400" alt="夏季养生" class="w-full h-full object-cover">
+            </div>
+            <div class="p-6">
+              <div class="flex items-center mb-4">
+                <i class="fa fa-sun-o text-yellow-500 text-xl mr-2"></i>
+                <h3 class="text-xl font-serif font-semibold">夏 · 养心</h3>
+              </div>
+              <p class="text-gray-600">
+                宜食苦味食物，清热解暑，养心安神。夏季养生应以清热利湿、养心安神为主，适当食用苦瓜、莲子等清热食材。
+              </p>
+            </div>
+          </div>
+          
+          <!-- 秋季 -->
+          <div class="season-card">
+            <div class="h-48 overflow-hidden">
+              <img src="https://picsum.photos/id/152/600/400" alt="秋季养生" class="w-full h-full object-cover">
+            </div>
+            <div class="p-6">
+              <div class="flex items-center mb-4">
+                <i class="fa fa-pagelines text-orange-600 text-xl mr-2"></i>
+                <h3 class="text-xl font-serif font-semibold">秋 · 养肺</h3>
+              </div>
+              <p class="text-gray-600">
+                宜食白色食物，滋阴润燥，养肺生津。秋季养生应以滋阴润燥、养肺生津为主，适当食用雪梨、银耳等润肺食材。
+              </p>
+            </div>
+          </div>
+          
+          <!-- 冬季 -->
+          <div class="season-card">
+            <div class="h-48 overflow-hidden">
+              <img src="https://picsum.photos/id/175/600/400" alt="冬季养生" class="w-full h-full object-cover">
+            </div>
+            <div class="p-6">
+              <div class="flex items-center mb-4">
+                <i class="fa fa-snowflake-o text-blue-400 text-xl mr-2"></i>
+                <h3 class="text-xl font-serif font-semibold">冬 · 养肾</h3>
+              </div>
+              <p class="text-gray-600">
+                宜食温补食物，固本培元，藏精养肾。冬季养生应以温补脾肾、固本培元为主，适当食用羊肉、核桃等温补食材。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- 产品区域 -->
+  <section id="products" class="py-16 section-fade">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-serif font-bold mb-4">养生产品</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">精选当季养生食材，科学配比，为您的健康保驾护航</p>
+      </div>
+      
+      <!-- 产品分类 -->
+      <div class="flex flex-wrap justify-center gap-4 md:gap-6 mb-10 product-categories">
+        <button class="category-btn underline-animation active px-4 py-2 font-medium" data-category="all">全部产品</button>
+        <button class="category-btn underline-animation px-4 py-2 font-medium" data-category="tea">养生茶</button>
+        <button class="category-btn underline-animation px-4 py-2 font-medium" data-category="porridge">养生粥</button>
+        <button class="category-btn underline-animation px-4 py-2 font-medium" data-category="soup">汤料包</button>
+        <button class="category-btn underline-animation px-4 py-2 font-medium" data-category="snack">健康零食</button>
+      </div>
+      
+      <!-- 产品网格 - 使用容器包裹以解决滚动问题 -->
+      <div class="product-container overflow-hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 products-grid">
+          <!-- 产品1 - 养生茶 -->
+          <div class="product-card group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 hover-scale cursor-pointer relative" data-category="tea" data-id="1">
+            <div class="relative overflow-hidden">
+              <img src="https://picsum.photos/id/225/400/300" alt="枸杞菊花茶" class="w-full h-60 object-cover">
+              <div class="absolute top-3 right-3 bg-secondary text-white text-sm px-3 py-1 rounded-full">
+                热销
+              </div>
+            </div>
+            <div class="p-5">
+              <h3 class="font-serif font-semibold text-lg mb-2 group-hover:text-primary transition-colors">枸杞菊花茶</h3>
+              <p class="text-gray-600 text-sm mb-4">养肝明目，清热降火</p>
+              <div class="flex justify-between items-center">
+                <span class="text-primary font-semibold">¥58.00</span>
+                <div class="relative">
+                  <button class="add-to-cart bg-primary/10 hover:bg-primary/20 text-primary p-2 rounded-full transition-colors" data-id="1" data-name="枸杞菊花茶" data-price="58" data-img="https://picsum.photos/id/225/400/300">
+                    <i class="fa fa-shopping-cart"></i>
+                  </button>
+                  <span class="added-to-cart">已加入购物车</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 产品2 - 养生粥 -->
+          <div class="product-card group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 hover-scale cursor-pointer relative" data-category="porridge" data-id="2">
+            <div class="relative overflow-hidden">
+              <img src="https://picsum.photos/id/431/400/300" alt="八宝粥原料" class="w-full h-60 object-cover">
+            </div>
+            <div class="p-5">
+              <h3 class="font-serif font-semibold text-lg mb-2 group-hover:text-primary transition-colors">八宝粥原料</h3>
+              <p class="text-gray-600 text-sm mb-4">健脾养胃，营养丰富</p>
+              <div class="flex justify-between items-center">
+                <span class="text-primary font-semibold">¥68.00</span>
+                <div class="relative">
+                  <button class="add-to-cart bg-primary/10 hover:bg-primary/20 text-primary p-2 rounded-full transition-colors" data-id="2" data-name="八宝粥原料" data-price="68" data-img="https://picsum.photos/id/431/400/300">
+                    <i class="fa fa-shopping-cart"></i>
+                  </button>
+                  <span class="added-to-cart">已加入购物车</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 产品3 - 汤料包 -->
+          <div class="product-card group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 hover-scale cursor-pointer relative" data-category="soup" data-id="3">
+            <div class="relative overflow-hidden">
+              <img src="https://picsum.photos/id/292/400/300" alt="当归黄芪汤" class="w-full h-60 object-cover">
+              <div class="absolute top-3 right-3 bg-secondary text-white text-sm px-3 py-1 rounded-full">
+                新品
+              </div>
+            </div>
+            <div class="p-5">
+              <h3 class="font-serif font-semibold text-lg mb-2 group-hover:text-primary transition-colors">当归黄芪汤</h3>
+              <p class="text-gray-600 text-sm mb-4">补气养血，调理身体</p>
+              <div class="flex justify-between items-center">
+                <span class="text-primary font-semibold">¥88.00</span>
+                <div class="relative">
+                  <button class="add-to-cart bg-primary/10 hover:bg-primary/20 text-primary p-2 rounded-full transition-colors" data-id="3" data-name="当归黄芪汤" data-price="88" data-img="https://picsum.photos/id/292/400/300">
+                    <i class="fa fa-shopping-cart"></i>
+                  </button>
+                  <span class="added-to-cart">已加入购物车</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 产品4 - 健康零食 -->
+          <div class="product-card group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 hover-scale cursor-pointer relative" data-category="snack" data-id="4">
+            <div class="relative overflow-hidden">
+              <img src="https://picsum.photos/id/139/400/300" alt="红枣夹核桃" class="w-full h-60 object-cover">
+            </div>
+            <div class="p-5">
+              <h3 class="font-serif font-semibold text-lg mb-2 group-hover:text-primary transition-colors">红枣夹核桃</h3>
+              <p class="text-gray-600 text-sm mb-4">补血健脑，天然美味</p>
+              <div class="flex justify-between items-center">
+                <span class="text-primary font-semibold">¥42.00</span>
+                <div class="relative">
+                  <button class="add-to-cart bg-primary/10 hover:bg-primary/20 text-primary p-2 rounded-full transition-colors" data-id="4" data-name="红枣夹核桃" data-price="42" data-img="https://picsum.photos/id/139/400/300">
+                    <i class="fa fa-shopping-cart"></i>
+                  </button>
+                  <span class="added-to-cart">已加入购物车</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 产品5 - 养生茶 -->
+          <div class="product-card group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 hover-scale cursor-pointer relative" data-category="tea" data-id="5">
+            <div class="relative overflow-hidden">
+              <img src="https://picsum.photos/id/306/400/300" alt="玫瑰花茶" class="w-full h-60 object-cover">
+            </div>
+            <div class="p-5">
+              <h3 class="font-serif font-semibold text-lg mb-2 group-hover:text-primary transition-colors">玫瑰花茶</h3>
+              <p class="text-gray-600 text-sm mb-4">理气解郁，美容养颜</p>
+              <div class="flex justify-between items-center">
+                <span class="text-primary font-semibold">¥52.00</span>
+                <div class="relative">
+                  <button class="add-to-cart bg-primary/10 hover:bg-primary/20 text-primary p-2 rounded-full transition-colors" data-id="5" data-name="玫瑰花茶" data-price="52" data-img="https://picsum.photos/id/306/400/300">
+                    <i class="fa fa-shopping-cart"></i>
+                  </button>
+                  <span class="added-to-cart">已加入购物车</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 产品6 - 养生粥 -->
+          <div class="product-card group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 hover-scale cursor-pointer relative" data-category="porridge" data-id="6">
+            <div class="relative overflow-hidden">
+              <img src="https://picsum.photos/id/225/401/300" alt="紫薯山药粥" class="w-full h-60 object-cover">
+              <div class="absolute top-3 right-3 bg-secondary text-white text-sm px-3 py-1 rounded-full">
+                热销
+              </div>
+            </div>
+            <div class="p-5">
+              <h3 class="font-serif font-semibold text-lg mb-2 group-hover:text-primary transition-colors">紫薯山药粥</h3>
+              <p class="text-gray-600 text-sm mb-4">润肠通便，增强免疫</p>
+              <div class="flex justify-between items-center">
+                <span class="text-primary font-semibold">¥56.00</span>
+                <div class="relative">
+                  <button class="add-to-cart bg-primary/10 hover:bg-primary/20 text-primary p-2 rounded-full transition-colors" data-id="6" data-name="紫薯山药粥" data-price="56" data-img="https://picsum.photos/id/225/401/300">
+                    <i class="fa fa-shopping-cart"></i>
+                  </button>
+                  <span class="added-to-cart">已加入购物车</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 产品7 - 汤料包 -->
+          <div class="product-card group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 hover-scale cursor-pointer relative" data-category="soup" data-id="7">
+            <div class="relative overflow-hidden">
+              <img src="https://picsum.photos/id/292/401/300" alt="莲子百合汤" class="w-full h-60 object-cover">
+            </div>
+            <div class="p-5">
+              <h3 class="font-serif font-semibold text-lg mb-2 group-hover:text-primary transition-colors">莲子百合汤</h3>
+              <p class="text-gray-600 text-sm mb-4">清心安神，润肺止咳</p>
+              <div class="flex justify-between items-center">
+                <span class="text-primary font-semibold">¥72.00</span>
+                <div class="relative">
+                  <button class="add-to-cart bg-primary/10 hover:bg-primary/20 text-primary p-2 rounded-full transition-colors" data-id="7" data-name="莲子百合汤" data-price="72" data-img="https://picsum.photos/id/292/401/300">
+                    <i class="fa fa-shopping-cart"></i>
+                  </button>
+                  <span class="added-to-cart">已加入购物车</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 产品8 - 健康零食 -->
+          <div class="product-card group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 hover-scale cursor-pointer relative" data-category="snack" data-id="8">
+            <div class="relative overflow-hidden">
+              <img src="https://picsum.photos/id/139/401/300" alt="黑芝麻丸" class="w-full h-60 object-cover">
+              <div class="absolute top-3 right-3 bg-secondary text-white text-sm px-3 py-1 rounded-full">
+                新品
+              </div>
+            </div>
+            <div class="p-5">
+              <h3 class="font-serif font-semibold text-lg mb-2 group-hover:text-primary transition-colors">黑芝麻丸</h3>
+              <p class="text-gray-600 text-sm mb-4">补肾益精，乌黑秀发</p>
+              <div class="flex justify-between items-center">
+                <span class="text-primary font-semibold">¥38.00</span>
+                <div class="relative">
+                  <button class="add-to-cart bg-primary/10 hover:bg-primary/20 text-primary p-2 rounded-full transition-colors" data-id="8" data-name="黑芝麻丸" data-price="38" data-img="https://picsum.photos/id/139/401/300">
+                    <i class="fa fa-shopping-cart"></i>
+                  </button>
+                  <span class="added-to-cart">已加入购物车</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-10">
+        <button class="border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-3 rounded-md transition-colors">
+          查看更多产品
+        </button>
+      </div>
+    </div>
+  </section>
+  <!-- 品牌故事 -->
+  <section id="story" class="py-16 bg-neutral section-fade">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row items-center gap-10">
+        <div class="md:w-1/2">
+          <img src="https://picsum.photos/id/493/800/600" alt="时养阁品牌故事" class="rounded-lg shadow-xl w-full hover-scale">
+        </div>
+        <div class="md:w-1/2">
+          <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-serif font-bold mb-6">品牌故事</h2>
+          <p class="text-gray-700 mb-4 leading-relaxed">
+            时养阁源于对传统养生文化的热爱与传承。我们相信，食物是最好的良药，顺应时令、合理膳食是健康之本。
+          </p>
+          <p class="text-gray-700 mb-6 leading-relaxed">
+            创始人在多年的养生研究中发现，现代都市人往往忽视了饮食与自然的联系。于是，时养阁应运而生，致力于将传统养生智慧融入现代生活，让更多人通过日常饮食获得健康与平衡。
+          </p>
+          <a href="#" class="inline-block border-b-2 border-primary text-primary font-medium pb-1 hover:text-primary/80 transition-colors">
+            了解更多 <i class="fa fa-long-arrow-right ml-2"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- 顾客评价 -->
+  <section id="testimonials" class="py-16 section-fade">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-serif font-bold mb-4">顾客评价</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">听听我们的顾客怎么说</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white p-6 rounded-lg shadow-md hover-scale">
+          <div class="flex items-center mb-4">
+            <img src="https://picsum.photos/id/64/100/100" alt="顾客头像" class="w-12 h-12 rounded-full object-cover mr-4">
+            <div>
+              <h4 class="font-semibold">李女士</h4>
+              <div class="text-secondary">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-600 italic">
+            "枸杞菊花茶味道很好，喝了一个月，感觉眼睛疲劳好多了。包装也很精美，送人自用两相宜。"
+          </p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md hover-scale">
+          <div class="flex items-center mb-4">
+            <img src="https://picsum.photos/id/91/100/100" alt="顾客头像" class="w-12 h-12 rounded-full object-cover mr-4">
+            <div>
+              <h4 class="font-semibold">张先生</h4>
+              <div class="text-secondary">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-half-o"></i>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-600 italic">
+            "八宝粥原料很丰富，煮出来香气扑鼻，每天早上一碗，营养又方便。已经回购好几次了。"
+          </p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md hover-scale">
+          <div class="flex items-center mb-4">
+            <img src="https://picsum.photos/id/26/100/100" alt="顾客头像" class="w-12 h-12 rounded-full object-cover mr-4">
+            <div>
+              <h4 class="font-semibold">王女士</h4>
+              <div class="text-secondary">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-600 italic">
+            "当归黄芪汤料包非常方便，食材新鲜，炖出来的汤味道鲜美，喝了之后感觉气血都通畅了。"
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- 联系我们区域 -->
+  <section id="contact" class="py-16 bg-white section-fade">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-serif font-bold mb-4">联系我们</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">如有任何疑问或建议，欢迎随时联系我们</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+        <div>
+          <div class="bg-neutral p-8 rounded-lg h-full">
+            <h3 class="text-xl font-serif font-semibold mb-6">联系方式</h3>
+            
+            <div class="space-y-6">
+              <div class="flex items-start">
+                <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                  <i class="fa fa-map-marker text-primary text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-1">地址</h4>
+                  <p class="text-gray-600">北京市朝阳区建国路88号</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                  <i class="fa fa-phone text-primary text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-1">电话</h4>
+                  <p class="text-gray-600">400-888-9999</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                  <i class="fa fa-envelope text-primary text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-1">邮箱</h4>
+                  <p class="text-gray-600">info@shiyangge.com</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                  <i class="fa fa-clock-o text-primary text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-1">营业时间</h4>
+                  <p class="text-gray-600">周一至周日 9:00-21:00</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-8">
+              <h4 class="font-semibold mb-4">关注我们</h4>
+              <div class="flex space-x-4">
+                <a href="#" class="w-10 h-10 bg-primary/10 hover:bg-primary/20 text-primary rounded-full flex items-center justify-center transition-colors">
+                  <i class="fa fa-weixin"></i>
+                </a>
+                <a href="#" class="w-10 h-10 bg-primary/10 hover:bg-primary/20 text-primary rounded-full flex items-center justify-center transition-colors">
+                  <i class="fa fa-weibo"></i>
+                </a>
+                <a href="#" class="w-10 h-10 bg-primary/10 hover:bg-primary/20 text-primary rounded-full flex items-center justify-center transition-colors">
+                  <i class="fa fa-instagram"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <form class="bg-white p-8 rounded-lg shadow-md">
+            <h3 class="text-xl font-serif font-semibold mb-6">发送消息</h3>
+            
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm text-gray-600 mb-1" for="contact-name">姓名</label>
+                <input type="text" id="contact-name" class="form-input">
+              </div>
+              
+              <div>
+                <label class="block text-sm text-gray-600 mb-1" for="contact-email">邮箱</label>
+                <input type="email" id="contact-email" class="form-input">
+              </div>
+              
+              <div>
+                <label class="block text-sm text-gray-600 mb-1" for="contact-subject">主题</label>
+                <input type="text" id="contact-subject" class="form-input">
+              </div>
+              
+              <div>
+                <label class="block text-sm text-gray-600 mb-1" for="contact-message">消息</label>
+                <textarea id="contact-message" rows="4" class="form-input"></textarea>
+              </div>
+              
+              <button type="submit" class="w-full bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition-colors">
+                发送消息
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- 页脚 -->
+  <footer class="bg-dark text-white pt-16 pb-8">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div>
+          <div class="flex items-center space-x-2 mb-6">
+            <img src="微信图片_2025-08-20_104830_530.jpg" alt="时养阁logo" class="h-8 w-auto">
+            <h3 class="text-2xl font-serif font-bold">时养阁</h3>
+          </div>
+          <p class="text-gray-400 mb-6">
+            以食为养，顺时生活。<br>
+            传承养生智慧，共享健康生活。
+          </p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fa fa-weixin text-xl"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fa fa-weibo text-xl"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fa fa-instagram text-xl"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-semibold mb-6">快速链接</h4>
+          <ul class="space-y-3">
+            <li><a href="#home" class="text-gray-400 hover:text-white transition-colors">首页</a></li>
+            <li><a href="#products" class="text-gray-400 hover:text-white transition-colors">产品</a></li>
+            <li><a href="#seasons" class="text-gray-400 hover:text-white transition-colors">顺时食养</a></li>
+            <li><a href="#story" class="text-gray-400 hover:text-white transition-colors">品牌故事</a></li>
+            <li><a href="#testimonials" class="text-gray-400 hover:text-white transition-colors">顾客评价</a></li>
+            <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors">联系我们</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-semibold mb-6">帮助中心</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">购物指南</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">支付方式</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">配送信息</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">退换政策</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">常见问题</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-semibold mb-6">联系我们</h4>
+          <ul class="space-y-3">
+            <li class="flex items-start">
+              <i class="fa fa-map-marker mt-1 mr-3 text-gray-400"></i>
+              <span class="text-gray-400">北京市朝阳区建国路88号</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fa fa-phone mr-3 text-gray-400"></i>
+              <span class="text-gray-400">400-888-9999</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fa fa-envelope mr-3 text-gray-400"></i>
+              <span class="text-gray-400">info@shiyangge.com</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fa fa-clock-o mr-3 text-gray-400"></i>
+              <span class="text-gray-400">周一至周日 9:00-21:00</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+        <p>© 2023 时养阁. 保留所有权利.</p>
+      </div>
+    </div>
+  </footer>
+  <!-- 购物车弹窗 -->
+  <div id="cartModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] flex flex-col transform scale-95 transition-transform duration-300">
+      <div class="p-6 border-b flex justify-between items-center">
+        <h3 class="text-xl font-serif font-bold">购物车</h3>
+        <button id="closeCart" class="text-gray-500 hover:text-dark transition-colors">
+          <i class="fa fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <div id="cartItems" class="flex-1 overflow-y-auto p-6 space-y-4">
+        <!-- 购物车为空时显示 -->
+        <div id="emptyCart" class="text-center py-12">
+          <i class="fa fa-shopping-cart text-5xl text-gray-300 mb-4"></i>
+          <p class="text-gray-500">您的购物车是空的</p>
+          <button id="startShopping" class="mt-4 text-primary hover:text-primary/80 transition-colors">
+            开始购物
+          </button>
+        </div>
+        
+        <!-- 购物车项目将通过JS动态添加 -->
+      </div>
+      
+      <div class="p-6 border-t">
+        <div class="flex justify-between mb-4">
+          <span class="font-semibold">总计:</span>
+          <span id="cartTotal" class="font-bold text-primary text-xl">¥0.00</span>
+        </div>
+        <button id="checkoutBtn" class="w-full bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          结算
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- 结算弹窗 -->
+  <div id="checkoutModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] flex flex-col transform scale-95 transition-transform duration-300">
+      <div class="p-6 border-b flex justify-between items-center">
+        <h3 class="text-xl font-serif font-bold">结算</h3>
+        <button id="closeCheckout" class="text-gray-500 hover:text-dark transition-colors">
+          <i class="fa fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <div class="flex-1 overflow-y-auto p-6">
+        <form id="checkoutForm">
+          <div class="mb-6">
+            <h4 class="font-semibold mb-4">收货信息</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block text-sm text-gray-600 mb-1" for="name">姓名</label>
+                <input type="text" id="name" class="form-input" required>
+              </div>
+              <div>
+                <label class="block text-sm text-gray-600 mb-1" for="phone">电话</label>
+                <input type="tel" id="phone" class="form-input" required>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm text-gray-600 mb-1" for="address">详细地址</label>
+              <input type="text" id="address" class="form-input" required>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
+              <div>
+                <label class="block text-sm text-gray-600 mb-1" for="payment">支付方式</label>
+                <select id="payment" class="form-input">
+                  <option value="wechat">微信支付</option>
+                  <option value="alipay">支付宝</option>
+                  <option value="card">银行卡</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-6">
+            <h4 class="font-semibold mb-4">订单摘要</h4>
+            <div class="bg-neutral p-4 rounded-md">
+              <div id="orderSummary" class="space-y-2 mb-4">
+                <!-- 订单摘要将通过JS动态添加 -->
+              </div>
+              <div class="border-t pt-2 flex justify-between font-semibold">
+                <span>总计:</span>
+                <span id="orderTotal" class="text-primary">¥0.00</span>
+              </div>
+            </div>
+          </div>
+          
+          <button type="submit" class="w-full bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition-colors">
+            提交订单
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- 付款界面弹窗 -->
+  <div id="paymentModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-lg w-full max-w-md max-h-[90vh] flex flex-col transform scale-95 transition-transform duration-300">
+      <div class="p-6 border-b flex justify-between items-center">
+        <h3 class="text-xl font-serif font-bold">请完成支付</h3>
+        <button id="closePayment" class="text-gray-500 hover:text-dark transition-colors">
+          <i class="fa fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <div class="flex-1 overflow-y-auto p-6 text-center">
+        <p class="mb-6">请使用手机扫描下方二维码完成支付</p>
+        
+        <!-- 二维码占位 -->
+        <div class="bg-white border-2 border-gray-200 p-4 inline-block rounded-md mb-6">
+          <img src="https://picsum.photos/id/0/200/200" alt="支付二维码" class="w-48 h-48 object-cover">
+        </div>
+        
+        <p class="text-sm text-gray-500 mb-6">
+          支付金额: <span id="paymentAmount" class="text-primary font-semibold">¥0.00</span>
+        </p>
+        
+        <div class="flex justify-center space-x-4">
+          <button id="paymentSuccessBtn" class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition-colors">
+            已完成支付
+          </button>
+          <button id="paymentCancelBtn" class="border border-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-100 transition-colors">
+            取消支付
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 成功提示弹窗 -->
+  <div id="successModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-lg w-full max-w-md p-6 text-center transform scale-95 transition-transform duration-300">
+      <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="fa fa-check text-green-500 text-2xl"></i>
+      </div>
+      <h3 class="text-xl font-semibold mb-2">订单提交成功！</h3>
+      <p class="text-gray-600 mb-6">
+        您的订单已成功提交，我们将尽快为您发货。
+      </p>
+      <button id="closeSuccess" class="w-full bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition-colors">
+        完成
+      </button>
+    </div>
+  </div>
+  <!-- 产品详情弹窗 -->
+  <div id="productDetailModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] flex flex-col transform scale-95 transition-transform duration-300">
+      <div class="p-6 border-b flex justify-between items-center">
+        <h3 class="text-xl font-serif font-bold">产品详情</h3>
+        <button id="closeProductDetail" class="text-gray-500 hover:text-dark transition-colors">
+          <i class="fa fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <div class="flex-1 overflow-y-auto p-6" id="productDetailContent">
+        <!-- 产品详情内容将通过JS动态添加 -->
+      </div>
+    </div>
+  </div>
+  <!-- 用户账号弹窗 -->
+  <div id="userAccountModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-lg w-full max-w-md max-h-[90vh] flex flex-col transform scale-95 transition-transform duration-300">
+      <div class="p-6 border-b flex justify-between items-center">
+        <h3 class="text-xl font-serif font-bold" id="accountModalTitle">用户登录</h3>
+        <button id="closeUserAccount" class="text-gray-500 hover:text-dark transition-colors">
+          <i class="fa fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <div class="flex-1 overflow-y-auto p-6">
+        <!-- 登录表单 -->
+        <div id="loginForm" class="account-form">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="login-email">邮箱</label>
+              <input type="email" id="login-email" class="form-input" required>
+            </div>
+            
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="login-password">密码</label>
+              <input type="password" id="login-password" class="form-input" required>
+            </div>
+            
+            <div class="flex justify-between items-center">
+              <label class="flex items-center">
+                <input type="checkbox" class="mr-2">
+                <span class="text-sm text-gray-600">记住我</span>
+              </label>
+              <a href="#" class="text-sm text-primary hover:underline">忘记密码？</a>
+            </div>
+            
+            <button type="button" id="loginBtn" class="w-full bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition-colors">
+              登录
+            </button>
+            
+            <p class="text-center text-sm text-gray-600">
+              还没有账号？ <a href="#" id="switchToRegister" class="text-primary hover:underline">立即注册</a>
+            </p>
+          </div>
+        </div>
+        
+        <!-- 注册表单 -->
+        <div id="registerForm" class="account-form hidden">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="register-name">姓名</label>
+              <input type="text" id="register-name" class="form-input" required>
+            </div>
+            
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="register-email">邮箱</label>
+              <input type="email" id="register-email" class="form-input" required>
+            </div>
+            
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="register-phone">电话</label>
+              <input type="tel" id="register-phone" class="form-input" required>
+            </div>
+            
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="register-password">密码</label>
+              <input type="password" id="register-password" class="form-input" required minlength="6">
+            </div>
+            
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="register-confirm-password">确认密码</label>
+              <input type="password" id="register-confirm-password" class="form-input" required>
+            </div>
+            
+            <button type="button" id="registerBtn" class="w-full bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition-colors">
+              注册
+            </button>
+            
+            <p class="text-center text-sm text-gray-600">
+              已有账号？ <a href="#" id="switchToLogin" class="text-primary hover:underline">立即登录</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // 全局变量
+    let cart = [];
+    let currentUser = null;
+    
+    // 产品详细信息数据
+    const productDetails = [
+      {
+        id: "1",
+        name: "枸杞菊花茶",
+        price: 58,
+        img: "https://picsum.photos/id/225/400/300",
+        images: [
+          "https://picsum.photos/id/225/400/300",
+          "https://picsum.photos/id/225/401/300",
+          "https://picsum.photos/id/225/402/300"
+        ],
+        category: "tea",
+        description: "枸杞菊花茶是一款经典的养生茶饮，精选宁夏枸杞和杭白菊，科学配比而成。具有养肝明目、清热降火、缓解疲劳的功效，适合长期使用电脑的人群饮用。",
+        features: [
+          "精选宁夏枸杞，颗粒饱满",
+          "优质杭白菊，香气浓郁",
+          "独立包装，方便携带",
+          "无添加剂，天然健康"
+        ],
+        usage: "取一包放入杯中，加入80-90℃热水，浸泡3-5分钟即可饮用，可反复冲泡2-3次。",
+        ingredients: "宁夏枸杞、杭白菊、冰糖"
+      },
+      {
+        id: "2",
+        name: "八宝粥原料",
+        price: 68,
+        img: "https://picsum.photos/id/431/400/300",
+        images: [
+          "https://picsum.photos/id/431/400/300",
+          "https://picsum.photos/id/431/401/300"
+        ],
+        category: "porridge",
+        description: "八宝粥原料精选八种天然谷物和豆类，科学配比，营养丰富。富含膳食纤维和多种维生素，有助于健脾养胃、促进消化，是理想的早餐选择。",
+        features: [
+          "八种食材，营养均衡",
+          "无添加蔗糖，健康天然",
+          "真空包装，锁住新鲜",
+          "简单易煮，方便快捷"
+        ],
+        usage: "将原料洗净后浸泡30分钟，加入适量清水，大火煮沸后转小火熬煮40-50分钟即可。可根据个人口味加入适量冰糖。",
+        ingredients: "大米、糯米、红豆、绿豆、花生、莲子、红枣、桂圆"
+      },
+      {
+        id: "3",
+        name: "当归黄芪汤",
+        price: 88,
+        img: "https://picsum.photos/id/292/400/300",
+        images: [
+          "https://picsum.photos/id/292/400/300",
+          "https://picsum.photos/id/292/401/300"
+        ],
+        category: "soup",
+        description: "当归黄芪汤是经典的补气养血方剂，精选优质当归、黄芪等中药材，科学配比而成。适合气血不足、面色苍白、手脚冰凉的人群食用。",
+        features: [
+          "道地药材，品质保证",
+          "科学配比，功效显著",
+          "独立包装，一次一包",
+          "无硫熏，安全健康"
+        ],
+        usage: "取一包汤料，加入适量清水和鸡肉或排骨，大火煮沸后转小火炖煮1-2小时，加入适量盐调味即可。",
+        ingredients: "当归、黄芪、党参、红枣、枸杞、桂圆"
+      },
+      {
+        id: "4",
+        name: "红枣夹核桃",
+        price: 42,
+        img: "https://picsum.photos/id/139/400/300",
+        images: [
+          "https://picsum.photos/id/139/400/300",
+          "https://picsum.photos/id/139/401/300"
+        ],
+        category: "snack",
+        description: "红枣夹核桃精选新疆和田大枣和云南纸皮核桃，手工制作而成。口感香甜酥脆，营养丰富，是理想的健康零食，具有补血健脑、美容养颜的功效。",
+        features: [
+          "新疆和田大枣，肉质饱满",
+          "云南纸皮核桃，果仁饱满",
+          "无添加蔗糖，自然香甜",
+          "独立包装，干净卫生"
+        ],
+        usage: "开袋即食，每日2-3颗为宜。可作为日常零食，也可用于烘焙、煲汤等。",
+        ingredients: "新疆和田大枣、云南纸皮核桃"
+      },
+      {
+        id: "5",
+        name: "玫瑰花茶",
+        price: 52,
+        img: "https://picsum.photos/id/306/400/300",
+        images: [
+          "https://picsum.photos/id/306/400/300",
+          "https://picsum.photos/id/306/401/300"
+        ],
+        category: "tea",
+        description: "玫瑰花茶精选优质平阴玫瑰，采用低温烘干工艺，保留了玫瑰花的营养成分和天然香气。具有理气解郁、活血散瘀、美容养颜的功效，适合女性日常饮用。",
+        features: [
+          "优质平阴玫瑰，花型完整",
+          "低温烘干，保留营养",
+          "香气浓郁，口感醇和",
+          "独立包装，方便卫生"
+        ],
+        usage: "取3-5朵玫瑰花放入杯中，加入80℃左右热水，浸泡3-5分钟即可饮用，可反复冲泡2-3次。",
+        ingredients: "平阴玫瑰花"
+      },
+      {
+        id: "6",
+        name: "紫薯山药粥",
+        price: 56,
+        img: "https://picsum.photos/id/225/401/300",
+        images: [
+          "https://picsum.photos/id/225/401/300",
+          "https://picsum.photos/id/225/402/300"
+        ],
+        category: "porridge",
+        description: "紫薯山药粥精选紫薯粉、山药粉、大米等天然食材，科学配比而成。富含膳食纤维、维生素和矿物质，有助于润肠通便、增强免疫力，是一款适合全家食用的健康粥品。",
+        features: [
+          "天然食材，营养丰富",
+          "即冲即食，方便快捷",
+          "口感细腻，香甜可口",
+          "独立包装，干净卫生"
+        ],
+        usage: "取一包放入碗中，加入约200ml热水，搅拌均匀后静置1-2分钟即可食用。可根据个人口味加入适量蜂蜜或牛奶。",
+        ingredients: "紫薯粉、山药粉、大米粉、燕麦粉、冰糖"
+      },
+      // 找到这部分不完整的代码
+{
+  id: "7",
+  name: "莲子百合汤",
+  price: 72,
+  img: "https://picsum.photos/id/292/401/300",
+  images: [
+    "https://picsum.photos/id/292/401/300",
+    "https://picsum.photos/id/292/402/300"
+  ],
+  category: "soup",
+  description: "莲子百合汤精选优质莲子和百合，搭配银耳等食材，具有清心安神、润肺止咳的功效，适合秋季食用。",
+  features: [
+    "无硫熏莲子，天然清香",
+    "新鲜百合，口感粉糯",
+    "科学配比，营养均衡"
+  ],
+  usage: "取一包汤料，加入适量清水，大火煮沸后转小火炖煮30分钟即可。",
+  ingredients: "莲子、百合、银耳、枸杞"
+}
