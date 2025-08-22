@@ -99,7 +99,7 @@
       
       <!-- 桌面端导航 -->
       <nav class="hidden md:flex items-center space-x-8">
-        <a href="#" id="noticeBtn" class="nav - link">最新公告</a>
+        <a href="#"id="noticeLinkId" id="noticeBtn" class="nav - link">最新公告</a>
         <a href="#home" class="font-medium hover:text-primary transition-colors">首页</a>
         <a href="#products" class="font-medium hover:text-primary transition-colors">产品</a>
         <a href="#seasons" class="font-medium hover:text-primary transition-colors">顺时食养</a>
@@ -1878,7 +1878,7 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const noticeLink = document.querySelector('a[href="#"]:contains("最新公告")');
+    const noticeLink = document.getElementById('noticeLinkId')
     const noticeModal = document.getElementById('noticeModal');
     const closeButton = document.getElementById('closeNoticeModal');
 
@@ -1894,6 +1894,7 @@
 </script>
 </body>
 </html>
+
 
 
 
