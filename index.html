@@ -99,6 +99,7 @@
       
       <!-- 桌面端导航 -->
       <nav class="hidden md:flex items-center space-x-8">
+        <a href="#" id="noticeBtn" class="nav - link">最新公告！</a>
         <a href="#home" class="font-medium hover:text-primary transition-colors">首页</a>
         <a href="#products" class="font-medium hover:text-primary transition-colors">产品</a>
         <a href="#seasons" class="font-medium hover:text-primary transition-colors">顺时食养</a>
@@ -962,6 +963,12 @@
   </div>
 
   <script>
+    
+    document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('noticeBtn').addEventListener('click', function () {
+        window.location.href = 'notice.html';
+    });
+});
     // 全局变量
     let cart = [];
     let currentUser = null;
@@ -1866,6 +1873,7 @@
   </script>
 </body>
 </html>
+
 
 
 
