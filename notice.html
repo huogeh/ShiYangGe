@@ -7,6 +7,28 @@
     
     <script src="https://cdn.tailwindcss.com"></script>  
 <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind自定义主题 - 更新为简约高级色调 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#5D4037',    // 深木色主调
+            secondary: '#8D6E63',  // 原木色
+            neutral: '#F5F5F5',    // 浅灰背景
+            cream: '#FAF5F0',      // 米白
+            dark: '#2D2D2D'        // 深灰文字
+          },
+          fontFamily: {
+            serif: ['"Noto Serif SC"', 'serif'],
+            sans: ['Inter', 'sans-serif']
+          },
+        },
+      }
+    }
+  </script>
+    
 </head>
     
 <body>
