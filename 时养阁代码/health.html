@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <style>
+    @media (max-width: 768px) {
+      .card-img {
+        opacity: 0;
+        transition: opacity 0.7s;
+      }
+      .card-img.visible {
+        opacity: 1;
+      }
+    }
+  </style>
+  <link rel="preload" as="image" href="logo.jpg">
+  <style type="text/tailwindcss">
+    .section-fade {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s, transform 0.7s;
+    }
+    .section-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>养生知识科普</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script>
+      // 所有图片渐显效果
+      function fadeInImages() {
+        document.querySelectorAll('img').forEach(function(img) {
+          img.style.opacity = '0';
+          img.style.transition = 'opacity 0.7s';
+          img.addEventListener('load', function() {
+            img.style.opacity = '1';
+          });
+          if (img.complete) {
+            setTimeout(() => { img.style.opacity = '1'; }, 100);
+          }
+        });
+      }
+      window.addEventListener('DOMContentLoaded', fadeInImages);
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#5D4037',
+            secondary: '#8D6E63',
+            neutral: '#F5F5F5',
+            cream: '#FAF5F0',
+            dark: '#2D2D2D'
+          },
+          fontFamily: {
+            serif: ['"Noto Serif SC"', 'serif'],
+            sans: ['Inter', 'sans-serif']
+          },
+        },
+      }
+    }
+  </script>
+</head>
+<body class="bg-cream text-dark font-sans">
+    <div class="w-full bg-white shadow-md py-6 text-center section-fade" id="healthHeader">
+      <div class="flex flex-col items-center justify-center">
+        <a href="index.html" id="backBtn" class="inline-block mb-4 text-secondary bg-neutral rounded-full px-5 py-2 text-base no-underline transition-colors hover:bg-secondary hover:text-white"><i class="fa fa-arrow-left mr-2"></i>返回首页</a>
+        <div class="flex items-center justify-center gap-3 mb-2">
+          <img src="logo.jpg" alt="logo" loading="lazy" id="logoImg" style="height:44px;width:auto;object-fit:contain;border-radius:8px;box-shadow:0 2px 8px #eee;opacity:0;transition:opacity 0.7s;">
+          <span class="text-primary text-3xl font-serif font-bold">养生知识科普</span>
+        </div>
+      </div>
+    </div>
+      <div class="max-w-4xl mx-auto px-2 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- 标签分类 -->
+        <div class="col-span-1 md:col-span-2 flex flex-wrap gap-3 mb-4 justify-center">
+          <span class="px-4 py-1 rounded-full bg-primary/10 text-primary text-sm cursor-pointer hover:bg-primary/20">#饮食养生</span>
+          <span class="px-4 py-1 rounded-full bg-secondary/10 text-secondary text-sm cursor-pointer hover:bg-secondary/20">#运动健康</span>
+          <span class="px-4 py-1 rounded-full bg-cream text-dark text-sm cursor-pointer hover:bg-neutral">#心理调节</span>
+          <span class="px-4 py-1 rounded-full bg-primary/10 text-primary text-sm cursor-pointer hover:bg-primary/20">#四季养生</span>
+          <span class="px-4 py-1 rounded-full bg-secondary/10 text-secondary text-sm cursor-pointer hover:bg-secondary/20">#养生案例</span>
+        </div>
+        <!-- 卡片内容区 -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
+    <img src="https://picsum.photos/id/131/600/400" alt="饮食养生" class="w-full h-56 object-cover mb-2 card-img">
+          <div class="p-4 flex-1 flex flex-col">
+            <div class="flex gap-2 mb-2">
+              <span class="px-2 py-0.5 rounded bg-primary/10 text-primary text-xs">#饮食养生</span>
+              <span class="px-2 py-0.5 rounded bg-cream text-dark text-xs">春季</span>
+            </div>
+            <h3 class="font-bold text-lg text-primary mb-2">春季饮食养生小贴士</h3>
+            <p class="text-dark text-sm mb-2">春季宜多食新鲜蔬菜水果，少油腻，适量补充蛋白质，保持肝气舒畅。</p>
+            <div class="flex items-center gap-2 mt-auto">
+              <img src="logo.jpg" alt="作者头像" class="w-8 h-8 rounded-full object-cover">
+              <span class="text-xs text-secondary">时养阁官方</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
+    <img src="https://picsum.photos/id/129/600/400" alt="运动健康" class="w-full h-56 object-cover mb-2 card-img">
+          <div class="p-4 flex-1 flex flex-col">
+            <div class="flex gap-2 mb-2">
+              <span class="px-2 py-0.5 rounded bg-secondary/10 text-secondary text-xs">#运动健康</span>
+              <span class="px-2 py-0.5 rounded bg-cream text-dark text-xs">夏季</span>
+            </div>
+            <h3 class="font-bold text-lg text-secondary mb-2">夏季运动与防暑</h3>
+            <p class="text-dark text-sm mb-2">夏季运动宜清晨或傍晚，避免高温时段，适当补水，预防中暑。</p>
+            <div class="flex items-center gap-2 mt-auto">
+              <img src="logo.jpg" alt="作者头像" class="w-8 h-8 rounded-full object-cover">
+              <span class="text-xs text-secondary">时养阁官方</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
+    <img src="https://picsum.photos/id/152/600/400" alt="心理调节" class="w-full h-56 object-cover mb-2 card-img">
+          <div class="p-4 flex-1 flex flex-col">
+            <div class="flex gap-2 mb-2">
+              <span class="px-2 py-0.5 rounded bg-cream text-dark text-xs">#心理调节</span>
+              <span class="px-2 py-0.5 rounded bg-secondary/10 text-secondary text-xs">秋季</span>
+            </div>
+            <h3 class="font-bold text-lg text-dark mb-2">秋季情绪与心理养生</h3>
+            <p class="text-dark text-sm mb-2">秋季易情绪波动，建议多与人交流，保持积极心态，适当户外活动。</p>
+            <div class="flex items-center gap-2 mt-auto">
+              <img src="logo.jpg" alt="作者头像" class="w-8 h-8 rounded-full object-cover">
+              <span class="text-xs text-secondary">时养阁官方</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
+    <img src="https://picsum.photos/id/175/600/400" alt="四季养生" class="w-full h-56 object-cover mb-2 card-img">
+          <div class="p-4 flex-1 flex flex-col">
+            <div class="flex gap-2 mb-2">
+              <span class="px-2 py-0.5 rounded bg-primary/10 text-primary text-xs">#四季养生</span>
+              <span class="px-2 py-0.5 rounded bg-cream text-dark text-xs">冬季</span>
+            </div>
+            <h3 class="font-bold text-lg text-primary mb-2">冬季温补与保暖</h3>
+            <p class="text-dark text-sm mb-2">冬季宜温补，注意保暖，适度锻炼，增强体质。</p>
+            <div class="flex items-center gap-2 mt-auto">
+              <img src="logo.jpg" alt="作者头像" class="w-8 h-8 rounded-full object-cover">
+              <span class="text-xs text-secondary">时养阁官方</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    <script>
+      // 页面淡出转场动画
+      document.getElementById('backBtn')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.body.style.transition = 'opacity 0.5s';
+        document.body.style.opacity = '0';
+        setTimeout(function(){ window.location.href = 'index.html'; }, 400);
+      });
+      // 页面进入时主内容渐显
+      function fadeInHealth() {
+        document.getElementById('healthHeader')?.classList.add('section-visible');
+        document.getElementById('healthContent')?.classList.add('section-visible');
+      }
+      window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(fadeInHealth, 80);
+      });
+    </script>
+      <!-- 版权底部 -->
+      <footer class="w-full bg-neutral border-t border-secondary py-8 mt-8">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 px-4">
+          <div class="flex items-center gap-4 mb-4 md:mb-0">
+            <img src="logo.jpg" alt="公众号二维码" class="w-16 h-16 rounded-lg shadow-md object-cover" loading="lazy">
+            <div>
+              <div class="font-bold text-primary text-lg mb-1">关注时养阁公众号</div>
+              <div class="text-dark text-sm">获取更多养生知识与健康资讯</div>
+            </div>
+          </div>
+          <div class="flex flex-col items-center md:items-end gap-2">
+            <div class="font-serif text-secondary text-base mb-1"><i class="fa fa-lightbulb-o mr-2"></i>健康小贴士</div>
+            <div class="text-dark text-sm mb-2">科学养生，均衡饮食，适度运动，保持良好心态。</div>
+            <div class="flex gap-3">
+              <a href="#" title="微信" class="text-secondary hover:text-primary text-xl"><i class="fa fa-weixin"></i></a>
+              <a href="#" title="微博" class="text-secondary hover:text-primary text-xl"><i class="fa fa-weibo"></i></a>
+              <a href="#" title="小红书" class="text-secondary hover:text-primary text-xl"><i class="fa fa-book"></i></a>
+            </div>
+            <a href="mailto:info@shiyangge.com" class="underline text-sm text-primary hover:text-secondary mt-2">联系我们：info@shiyangge.com</a>
+          </div>
+        </div>
+        <div class="text-center text-xs text-secondary mt-6">&copy; 2025 时养阁 | 以食为养，顺时生活 | 保留所有权利</div>
+      </footer>
+</body>
+</html>
