@@ -79,7 +79,6 @@
       .form-input {
         @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary;
       }
-    #noticeModal { max-width: 300px; max-height: 200px; overflow: auto; }
     }
   </style>
   
@@ -1891,20 +1890,14 @@
         });
 
         closeButton.addEventListener('click', function (e) {
-    noticeModal.classList.add('opacity-0');
-    setTimeout(() => {
-        noticeModal.classList.add('pointer-events-none');
-    }, 300);
-});
+            e.preventDefault();
+            noticeModal.classList.add('hidden');
+        });
     });
 </script>
   
 </body>
 </html>
-
-
-
-
 
 
 
