@@ -6,9 +6,14 @@
       .card-img {
         opacity: 0;
         transition: opacity 0.7s;
+        height: 7.5rem !important; /* 120px，原来10rem=160px，缩小一点 */
       }
       .card-img.visible {
         opacity: 1;
+      }
+      .season-card {
+        padding: 0.75rem !important;
+        font-size: 0.95rem !important;
       }
     }
   </style>
@@ -30,6 +35,44 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <script>
+      // 快捷按钮弹窗逻辑（修复事件绑定）
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.bmiQuickBtn').forEach(function(btn){
+          btn.addEventListener('click', function() {
+            document.getElementById('bmiModal').classList.remove('opacity-0', 'pointer-events-none');
+            document.getElementById('bmiModal').classList.add('opacity-100');
+            document.getElementById('bmiModal').style.pointerEvents = 'auto';
+            document.getElementById('bmiModal').style.opacity = '1';
+          });
+        });
+        document.getElementById('closeBmiModal')?.addEventListener('click', function() {
+          document.getElementById('bmiModal').classList.add('opacity-0', 'pointer-events-none');
+          document.getElementById('bmiModal').classList.remove('opacity-100');
+          document.getElementById('bmiModal').style.pointerEvents = 'none';
+          document.getElementById('bmiModal').style.opacity = '0';
+          document.getElementById('bmiResult').textContent = '';
+        });
+        document.querySelectorAll('.constitutionQuickBtn').forEach(function(btn){
+          btn.addEventListener('click', function() {
+            var modal = document.getElementById('constitutionModal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.classList.add('opacity-100');
+            modal.style.pointerEvents = 'auto';
+            modal.style.opacity = '1';
+          });
+        });
+      });
+      // 修复退出问卷按钮点击无效问题
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('exitConstitutionModal')?.addEventListener('click', function() {
+          var modal = document.getElementById('constitutionModal');
+          modal.classList.add('opacity-0', 'pointer-events-none');
+          modal.classList.remove('opacity-100');
+          modal.style.pointerEvents = 'none';
+          modal.style.opacity = '0';
+          document.getElementById('constitutionResult').textContent = '';
+        });
+      });
       // 所有图片渐显效果
       function fadeInImages() {
         document.querySelectorAll('img').forEach(function(img) {
@@ -64,28 +107,48 @@
   </script>
 </head>
 <body class="bg-cream text-dark font-sans">
-    <div class="w-full bg-white shadow-md py-4 text-center section-fade" id="healthHeader">
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-2 px-2">
-        <a href="index.html" id="backBtn" class="inline-block mb-2 sm:mb-0 text-secondary bg-neutral rounded-full px-3 py-2 text-base no-underline transition-colors hover:bg-secondary hover:text-white"><i class="fa fa-arrow-left mr-2"></i>返回首页</a>
-        <div class="flex flex-col sm:flex-row items-center gap-2">
-          <img src="logo.jpg" alt="logo" loading="lazy" id="logoImg" class="h-9 w-auto rounded-lg shadow" style="opacity:0;transition:opacity 0.7s;">
-          <span class="text-primary text-xl sm:text-2xl md:text-3xl font-serif font-bold whitespace-nowrap">养生知识科普</span>
+    <!-- 顶部信息栏：logo+标题+健康工具按钮 -->
+    <div class="w-full bg-white shadow-md py-4 section-fade" id="healthHeader">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 px-4">
+        <div class="flex items-center gap-3 mb-2 md:mb-0 w-full md:w-auto">
+          <div class="flex items-center justify-center w-full">
+            <a href="index.html" id="backBtn" class="inline-block text-secondary bg-neutral rounded-full px-3 py-2 text-base no-underline transition-colors hover:bg-secondary hover:text-white mr-2"><i class="fa fa-arrow-left mr-2"></i></a>
+            <img src="logo.jpg" alt="logo" loading="lazy" id="logoImg" class="h-10 w-auto rounded-lg shadow mx-2" style="opacity:0;transition:opacity 0.7s;">
+            <span class="text-primary text-2xl md:text-3xl font-serif font-bold whitespace-nowrap">养生知识栏</span>
+          </div>
+        </div>
+        <!-- 电脑端按钮区 -->
+        <div class="hidden md:flex gap-4 items-center border-l md:border-l-2 border-neutral pl-6">
+          <button class="bmiQuickBtn flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-xl shadow hover:bg-primary/20 transition text-base md:text-lg min-w-[120px] max-w-xs font-semibold">
+            <i class="fa fa-calculator"></i> BMI健康指数
+          </button>
+          <button class="constitutionQuickBtn flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-xl shadow hover:bg-primary/20 transition text-base md:text-lg min-w-[120px] max-w-xs font-semibold">
+            <i class="fa fa-user-md"></i> 体质测试
+          </button>
         </div>
       </div>
+      <!-- 手机端按钮区 -->
+      <div class="flex md:hidden gap-4 justify-center mt-3">
+  <button class="bmiQuickBtn flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-xl shadow hover:bg-primary/20 transition text-base min-w-[120px] max-w-xs font-semibold">
+          <i class="fa fa-calculator"></i> BMI健康指数
+        </button>
+  <button class="constitutionQuickBtn flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-xl shadow hover:bg-primary/20 transition text-base min-w-[120px] max-w-xs font-semibold">
+          <i class="fa fa-user-md"></i> 体质测试
+        </button>
+      </div>
+      </div>
     </div>
-  <!-- ...existing code... -->
-      <div class="max-w-4xl mx-auto px-2 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- 标签分类 -->
+      <div class="max-w-4xl mx-auto px-2 py-6 grid grid-cols-1 md:grid-cols-2 gap-6 section-fade" id="healthContent">
+  <!-- 标签分类 -->
   <div class="col-span-1 md:col-span-2 flex flex-wrap gap-2 sm:gap-3 mb-4 justify-center">
-          <span class="px-4 py-1 rounded-full bg-primary/10 text-primary text-sm cursor-pointer hover:bg-primary/20">#饮食养生</span>
-          <span class="px-4 py-1 rounded-full bg-secondary/10 text-secondary text-sm cursor-pointer hover:bg-secondary/20">#运动健康</span>
-          <span class="px-4 py-1 rounded-full bg-cream text-dark text-sm cursor-pointer hover:bg-neutral">#心理调节</span>
-          <span class="px-4 py-1 rounded-full bg-primary/10 text-primary text-sm cursor-pointer hover:bg-primary/20">#四季养生</span>
-          <span class="px-4 py-1 rounded-full bg-secondary/10 text-secondary text-sm cursor-pointer hover:bg-secondary/20">#养生案例</span>
-        </div>
+  <span class="px-4 py-1 rounded-full bg-primary/10 text-primary text-sm cursor-pointer hover:bg-primary/20">#饮食养生</span>
+  <span class="px-4 py-1 rounded-full bg-secondary/10 text-secondary text-sm cursor-pointer hover:bg-secondary/20">#运动健康</span>
+  <span class="px-4 py-1 rounded-full bg-primary/10 text-primary text-sm cursor-pointer hover:bg-primary/20">#四季养生</span>
+  <span class="px-4 py-1 rounded-full bg-secondary/10 text-secondary text-sm cursor-pointer hover:bg-secondary/20">#养生案例</span>
+  </div>
         <!-- 卡片内容区 -->
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
-  <img src="https://picsum.photos/id/131/600/400" alt="饮食养生" class="w-full h-40 sm:h-56 object-cover mb-2 card-img rounded-t-2xl">
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col season-card section-fade">
+  <img src="https://picsum.photos/id/131/600/400" alt="饮食养生" class="w-full h-30 sm:h-56 object-cover mb-2 card-img rounded-t-2xl">
           <div class="p-4 flex-1 flex flex-col">
             <div class="flex gap-2 mb-2">
               <span class="px-2 py-0.5 rounded bg-primary/10 text-primary text-xs">#饮食养生</span>
@@ -99,8 +162,8 @@
             </div>
           </div>
         </div>
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
-  <img src="https://picsum.photos/id/129/600/400" alt="运动健康" class="w-full h-40 sm:h-56 object-cover mb-2 card-img rounded-t-2xl">
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col season-card section-fade">
+  <img src="https://picsum.photos/id/129/600/400" alt="运动健康" class="w-full h-30 sm:h-56 object-cover mb-2 card-img rounded-t-2xl">
           <div class="p-4 flex-1 flex flex-col">
             <div class="flex gap-2 mb-2">
               <span class="px-2 py-0.5 rounded bg-secondary/10 text-secondary text-xs">#运动健康</span>
@@ -114,8 +177,8 @@
             </div>
           </div>
         </div>
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
-  <img src="https://picsum.photos/id/152/600/400" alt="心理调节" class="w-full h-40 sm:h-56 object-cover mb-2 card-img rounded-t-2xl">
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col season-card section-fade">
+  <img src="https://picsum.photos/id/152/600/400" alt="心理调节" class="w-full h-30 sm:h-56 object-cover mb-2 card-img rounded-t-2xl">
           <div class="p-4 flex-1 flex flex-col">
             <div class="flex gap-2 mb-2">
               <span class="px-2 py-0.5 rounded bg-cream text-dark text-xs">#心理调节</span>
@@ -129,8 +192,8 @@
             </div>
           </div>
         </div>
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
-  <img src="https://picsum.photos/id/175/600/400" alt="四季养生" class="w-full h-40 sm:h-56 object-cover mb-2 card-img rounded-t-2xl">
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col season-card section-fade">
+  <img src="https://picsum.photos/id/175/600/400" alt="四季养生" class="w-full h-30 sm:h-56 object-cover mb-2 card-img rounded-t-2xl">
           <div class="p-4 flex-1 flex flex-col">
             <div class="flex gap-2 mb-2">
               <span class="px-2 py-0.5 rounded bg-primary/10 text-primary text-xs">#四季养生</span>
@@ -162,33 +225,64 @@
       window.addEventListener('DOMContentLoaded', function() {
         setTimeout(fadeInHealth, 80);
       });
+      // 渐显动画：主要内容区和四季养生卡片依次渐显
+window.addEventListener('DOMContentLoaded', function() {
+  const fades = document.querySelectorAll('.section-fade');
+  fades.forEach((el, i) => {
+    setTimeout(() => {
+      el.classList.add('section-visible');
+    }, 200 + i * 200);
+  });
+});
     </script>
       <!-- 版权底部 -->
       <footer class="w-full bg-neutral border-t border-secondary py-8 mt-8">
     <!-- 健康工具区、体质测试入口、养生资讯推送区整体移动到底部 -->
     <div class="max-w-3xl mx-auto px-2 py-6 bg-white rounded-2xl shadow mb-8">
-      <h2 class="text-lg font-bold text-primary mb-4 flex items-center gap-2"><i class="fa fa-calculator"></i> BMI健康指数计算</h2>
-  <div class="flex flex-col sm:flex-row gap-3 items-center">
-        <input type="number" id="bmiHeight" placeholder="身高(cm)" class="border px-3 py-2 rounded w-full sm:w-1/2 mb-2 sm:mb-0">
-        <input type="number" id="bmiWeight" placeholder="体重(kg)" class="border px-3 py-2 rounded w-full sm:w-1/2">
-        <button id="bmiCalcBtn" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary/90">计算</button>
+    <div class="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+      <!-- BMI弹窗 -->
+      <div id="bmiModal" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white rounded-lg max-w-lg p-4 shadow-lg flex flex-col"
+          style="max-width:95vw;min-width:0;max-height:70vh;overflow-y:auto;">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-primary"><i class="fa fa-calculator mr-2"></i>BMI健康指数</h3>
+            <button id="closeBmiModal" class="px-2 py-1 rounded bg-neutral text-dark hover:bg-secondary hover:text-white text-sm">关闭</button>
+          </div>
+          <div class="flex flex-col gap-3 mb-2">
+            <input type="number" id="bmiHeight" placeholder="身高(cm)" class="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-primary">
+            <input type="number" id="bmiWeight" placeholder="体重(kg)" class="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-primary">
+          </div>
+          <button id="bmiCalcBtn" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 shadow w-full">计算</button>
+          <div id="bmiResult" class="mt-3 text-secondary font-semibold text-base min-h-[2em] bg-neutral rounded px-3 py-2"></div>
+        </div>
       </div>
-      <div id="bmiResult" class="mt-3 text-secondary font-semibold"></div>
+      <!-- 体质测试弹窗（原位置保留） -->
     </div>
-  <div class="max-w-3xl mx-auto px-2 py-6 bg-white rounded-2xl shadow mb-8 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <div>
-        <h2 class="text-lg font-bold text-primary mb-2 flex items-center gap-2"><i class="fa fa-user-md"></i> 体质测试</h2>
-        <div class="text-dark text-sm">快速了解你的体质类型，获得个性化养生建议。</div>
-      </div>
-      <a href="#" class="bg-secondary text-white px-5 py-2 rounded hover:bg-secondary/90 font-bold">开始测试</a>
     <!-- 体质测试弹窗 -->
     <div id="constitutionModal" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
-  <div class="bg-white rounded-lg w-full max-w-md p-4 sm:p-6 shadow-lg">
+      <div class="bg-white rounded-lg max-w-md p-2 sm:p-6 shadow-lg flex flex-col"
+        style="max-width:95vw;min-width:0;max-height:70vh;overflow-y:auto;">
+        <style>
+          @media (max-width: 768px) {
+            #constitutionModal > div { max-height: 60vh !important; }
+          }
+        </style>
+        <style>
+          @media (max-width: 768px) {
+            #constitutionModal > div { max-height: 65vh !important; }
+          }
+        </style>
+        <div class="sticky top-0 bg-white z-10 pb-2 flex items-center justify-between">
+          <h3 class="text-xl font-bold text-primary mb-2">体质测试问卷</h3>
+          <button id="exitConstitutionModal" class="ml-2 px-3 py-1 rounded bg-neutral text-dark hover:bg-secondary hover:text-white text-sm">退出问卷</button>
+        </div>
+        <div class="flex-1 overflow-y-auto" style="min-height:0;">
         <h3 class="text-xl font-bold text-primary mb-4">体质测试问卷</h3>
         <form id="constitutionForm" class="space-y-4">
           <div>
             <label class="font-medium text-dark">1. 你平时容易疲劳吗？</label><br>
             <select class="border rounded px-3 py-2 w-full" name="q1">
+              <option value="-1" selected>未知</option>
               <option value="0">否</option>
               <option value="1">偶尔</option>
               <option value="2">经常</option>
@@ -197,6 +291,7 @@
           <div>
             <label class="font-medium text-dark">2. 你容易感冒或生病吗？</label><br>
             <select class="border rounded px-3 py-2 w-full" name="q2">
+              <option value="-1" selected>未知</option>
               <option value="0">否</option>
               <option value="1">偶尔</option>
               <option value="2">经常</option>
@@ -205,6 +300,7 @@
           <div>
             <label class="font-medium text-dark">3. 你的饮食习惯偏向？</label><br>
             <select class="border rounded px-3 py-2 w-full" name="q3">
+              <option value="-1" selected>未知</option>
               <option value="0">均衡</option>
               <option value="1">偏油腻</option>
               <option value="2">偏清淡</option>
@@ -213,9 +309,109 @@
           <div>
             <label class="font-medium text-dark">4. 你平时情绪状态？</label><br>
             <select class="border rounded px-3 py-2 w-full" name="q4">
+              <option value="-1" selected>未知</option>
               <option value="0">稳定</option>
               <option value="1">易波动</option>
               <option value="2">经常焦虑</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-medium text-dark">5. 你是否有失眠或睡眠质量差的情况？</label><br>
+            <select class="border rounded px-3 py-2 w-full" name="q5">
+              <option value="-1" selected>未知</option>
+              <option value="0">没有</option>
+              <option value="1">偶尔</option>
+              <option value="2">经常</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-medium text-dark">6. 你是否容易口干、咽干？</label><br>
+            <select class="border rounded px-3 py-2 w-full" name="q6">
+              <option value="-1" selected>未知</option>
+              <option value="0">没有</option>
+              <option value="1">偶尔</option>
+              <option value="2">经常</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-medium text-dark">7. 你是否容易出汗？</label><br>
+            <select class="border rounded px-3 py-2 w-full" name="q7">
+              <option value="-1" selected>未知</option>
+              <option value="0">不容易</option>
+              <option value="1">一般</option>
+              <option value="2">很容易</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-medium text-dark">8. 你是否有消化不良或腹胀？</label><br>
+            <select class="border rounded px-3 py-2 w-full" name="q8">
+              <option value="-1" selected>未知</option>
+              <option value="0">没有</option>
+              <option value="1">偶尔</option>
+              <option value="2">经常</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-medium text-dark">9. 你是否容易便秘或腹泻？</label><br>
+            <select class="border rounded px-3 py-2 w-full" name="q9">
+              <option value="-1" selected>未知</option>
+              <option value="0">没有</option>
+              <option value="1">偶尔</option>
+              <option value="2">经常</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-medium text-dark">10. 你是否有过敏或皮肤问题？</label><br>
+            <select class="border rounded px-3 py-2 w-full" name="q10">
+              <option value="-1" selected>未知</option>
+              <option value="0">没有</option>
+              <option value="1">轻微</option>
+              <option value="2">严重</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-medium text-dark">11. 你是否经常运动？</label><br>
+            <select class="border rounded px-3 py-2 w-full" name="q11">
+              <option value="-1" selected>未知</option>
+              <option value="0">经常</option>
+              <option value="1">偶尔</option>
+              <option value="2">很少</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-medium text-dark">12. 你是否有慢性疾病（如高血压、糖尿病等）？</label><br>
+            <select class="border rounded px-3 py-2 w-full" name="q12">
+              <option value="-1" selected>未知</option>
+              <option value="0">没有</option>
+              <option value="1">有</option>
+              <option value="2">多种</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-medium text-dark">13. 你是否经常感到压力大？</label><br>
+            <select class="border rounded px-3 py-2 w-full" name="q13">
+              <option value="-1" selected>未知</option>
+              <option value="0">很少</option>
+              <option value="1">偶尔</option>
+              <option value="2">经常</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-medium text-dark">14. 你是否有体重波动明显的情况？</label><br>
+            <select class="border rounded px-3 py-2 w-full" name="q14">
+              <option value="-1" selected>未知</option>
+              <option value="0">没有</option>
+              <option value="1">偶尔</option>
+              <option value="2">经常</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-medium text-dark">15. 你是否有家族遗传疾病史？</label><br>
+            <select class="border rounded px-3 py-2 w-full" name="q15">
+              <option value="-1" selected>未知</option>
+              <option value="0">没有</option>
+              <option value="1">有</option>
+              <option value="2">多种</option>
             </select>
           </div>
           <button type="submit" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 w-full mt-2">提交</button>
@@ -227,71 +423,70 @@
     </div>
     <div class="max-w-3xl mx-auto px-2 py-6 bg-white rounded-2xl shadow mb-8">
       <h2 class="text-lg font-bold text-primary mb-4 flex items-center gap-2"><i class="fa fa-newspaper-o"></i> 养生资讯 · 热点推送</h2>
-      <ul class="list-disc pl-6 text-dark space-y-2">
-        <li><a href="#" class="text-primary hover:underline">秋季养生重点：润燥防燥，推荐食材与方法</a></li>
-        <li><a href="#" class="text-primary hover:underline">专家解读：不同体质的饮食建议</a></li>
-        <li><a href="#" class="text-primary hover:underline">最新研究：运动与心理健康的关系</a></li>
-        <li><a href="#" class="text-primary hover:underline">养生误区盘点，如何科学养生？</a></li>
+      <ul class="list-disc pl-4 sm:pl-6 text-dark space-y-2">
+        <li><a href="#" class="text-primary hover:underline text-base">秋季养生重点：润燥防燥，推荐食材与方法</a></li>
+        <li><a href="#" class="text-primary hover:underline text-base">专家解读：不同体质的饮食建议</a></li>
+        <li><a href="#" class="text-primary hover:underline text-base">最新研究：运动与心理健康的关系</a></li>
+        <li><a href="#" class="text-primary hover:underline text-base">养生误区盘点，如何科学养生？</a></li>
       </ul>
     </div>
     <script>
-      // BMI计算功能
-      document.getElementById('bmiCalcBtn')?.addEventListener('click', function() {
-        var h = parseFloat(document.getElementById('bmiHeight').value) / 100;
-        var w = parseFloat(document.getElementById('bmiWeight').value);
-        var result = '';
-        var advice = '';
-        if (h > 0 && w > 0) {
-          var bmi = w / (h * h);
-          bmi = Math.round(bmi * 10) / 10;
-          if (bmi < 18.5) {
-            result = `BMI：${bmi}，偏瘦`;
-            advice = '建议：注意营养均衡，适当增加蛋白质和热量摄入，规律锻炼，避免过度消耗。';
-          } else if (bmi < 24) {
-            result = `BMI：${bmi}，正常`;
-            advice = '建议：保持良好饮食和运动习惯，维持健康体重。';
-          } else if (bmi < 28) {
-            result = `BMI：${bmi}，超重`;
-            advice = '建议：适当控制饮食热量，增加有氧运动，注意体重管理。';
+      // BMI计算功能（修复事件绑定位置）
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('bmiCalcBtn')?.addEventListener('click', function() {
+          var h = parseFloat(document.getElementById('bmiHeight').value) / 100;
+          var w = parseFloat(document.getElementById('bmiWeight').value);
+          var result = '';
+          var advice = '';
+          if (h > 0 && w > 0) {
+            var bmi = w / (h * h);
+            bmi = Math.round(bmi * 10) / 10;
+            if (bmi < 18.5) {
+              result = `BMI：${bmi}，偏瘦`;
+              advice = '建议：注意营养均衡，适当增加蛋白质和热量摄入，规律锻炼，避免过度消耗。';
+            } else if (bmi < 24) {
+              result = `BMI：${bmi}，正常`;
+              advice = '建议：保持良好饮食和运动习惯，维持健康体重。';
+            } else if (bmi < 28) {
+              result = `BMI：${bmi}，超重`;
+              advice = '建议：适当控制饮食热量，增加有氧运动，注意体重管理。';
+            } else {
+              result = `BMI：${bmi}，肥胖`;
+              advice = '建议：减少高热量食物摄入，增加运动频率，必要时咨询医生制定减重计划。';
+            }
           } else {
-            result = `BMI：${bmi}，肥胖`;
-            advice = '建议：减少高热量食物摄入，增加运动频率，必要时咨询医生制定减重计划。';
+            result = '请输入正确的身高和体重';
           }
-        } else {
-          result = '请输入正确的身高和体重';
-        }
-        document.getElementById('bmiResult').innerHTML = result + (advice ? '<br><span class="text-sm text-dark">' + advice + '</span>' : '');
-      });
-
-      // 体质测试弹窗逻辑修复
-      document.querySelector('a.bg-secondary.font-bold')?.addEventListener('click', function(e) {
-        e.preventDefault();
-        var modal = document.getElementById('constitutionModal');
-        modal.classList.remove('opacity-0', 'pointer-events-none');
-        modal.classList.add('opacity-100');
-        modal.style.pointerEvents = 'auto';
-        modal.style.opacity = '1';
-      });
-      document.getElementById('closeConstitutionModal')?.addEventListener('click', function() {
-        var modal = document.getElementById('constitutionModal');
-        modal.classList.add('opacity-0', 'pointer-events-none');
-        modal.classList.remove('opacity-100');
-        modal.style.pointerEvents = 'none';
-        modal.style.opacity = '0';
-        document.getElementById('constitutionResult').textContent = '';
-      });
-      document.getElementById('constitutionForm')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const form = e.target;
-        let score = 0;
-        for (let i = 1; i <= 4; i++) {
-          score += parseInt(form[`q${i}`].value);
-        }
-        let result = '';
-        if (score <= 2) result = '您的体质较为均衡，建议保持良好生活习惯。';
-        else if (score <= 5) result = '您的体质偏亚健康，建议加强锻炼，均衡饮食，注意休息。';
-        else result = '您的体质偏虚弱，建议及时调整作息，适当补充营养，必要时咨询医生。';
-        document.getElementById('constitutionResult').textContent = result;
+          document.getElementById('bmiResult').innerHTML = result + (advice ? '<br><span class="text-sm text-dark">' + advice + '</span>' : '');
+        });
+        // 体质测试弹窗逻辑修复
+        document.getElementById('closeConstitutionModal')?.addEventListener('click', function() {
+          var modal = document.getElementById('constitutionModal');
+          modal.classList.add('opacity-0', 'pointer-events-none');
+          modal.classList.remove('opacity-100');
+          modal.style.pointerEvents = 'none';
+          modal.style.opacity = '0';
+          document.getElementById('constitutionResult').textContent = '';
+        });
+        document.getElementById('constitutionForm')?.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const form = e.target;
+          let score = 0;
+          let unknown = 0;
+          for (let i = 1; i <= 15; i++) {
+            let val = parseInt(form[`q${i}`].value);
+            if (val === -1) unknown++;
+            else score += val;
+          }
+          let result = '';
+          if (unknown > 0) {
+            result = `有${unknown}题未选择，建议补全后获得更准确结果。`;
+          }
+          if (score <= 5) result += '您的体质较为均衡，建议保持良好生活习惯。';
+          else if (score <= 15) result += '您的体质偏亚健康，建议加强锻炼，均衡饮食，注意休息。';
+          else result += '您的体质偏虚弱，建议及时调整作息，适当补充营养，必要时咨询医生。';
+          document.getElementById('constitutionResult').textContent = result;
+        });
       });
     </script>
     <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 px-2 sm:px-4">
@@ -315,5 +510,6 @@
         </div>
         <div class="text-center text-xs text-secondary mt-6">&copy; 2025 时养阁 | 以食为养，顺时生活 | 保留所有权利</div>
       </footer>
+</footer>
 </body>
 </html>
