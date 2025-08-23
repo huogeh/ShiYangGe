@@ -1874,7 +1874,7 @@
 <div id="noticeModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
     <div class="bg-white p-8 rounded-lg">
         <h2 class="text-2xl font-bold mb-4">最新公告</h2>
-        <p>这里填写公告具体内容啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</p>
+        <p>这里填写公告具体内容</p>
         <button id="closeNoticeModal" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">关闭</button>
     </div>
 </div> 
@@ -1891,15 +1891,17 @@
         });
 
         closeButton.addEventListener('click', function (e) {
-            e.preventDefault();
-            noticeModal.classList.add('opacity-0');
-            noticeModal.classList.add('pointer-events-none');
-        });
+    noticeModal.classList.add('opacity-0');
+    setTimeout(() => {
+        noticeModal.classList.add('pointer-events-none');
+    }, 300);
+});
     });
 </script>
   
 </body>
 </html>
+
 
 
 
