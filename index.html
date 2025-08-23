@@ -98,8 +98,7 @@
       </a>
       
       <!-- 桌面端导航 -->
-      <nav class="hidden md:flex items-center space-x-8">
-        <a href="#"id="noticeLinkId" id="noticeBtn" class="nav - link">最新公告</a>
+      <nav class="hidden md:flex items-center space-x-8">        
         <a href="#home" class="font-medium hover:text-primary transition-colors">首页</a>
         <a href="#products" class="font-medium hover:text-primary transition-colors">产品</a>
         <a href="#seasons" class="font-medium hover:text-primary transition-colors">顺时食养</a>
@@ -110,6 +109,9 @@
       
       <!-- 用户功能区 -->
       <div class="flex items-center space-x-6">
+        <button id="noticeIconBtn" class="relative hover:text-primary transition-colors">
+    <i class="fa fa-bell fa-lg"></i>
+        </button>
         <button class="hover:text-primary transition-colors">
           <i class="fa fa-search text-xl"></i>
         </button>
@@ -1867,33 +1869,35 @@
       });
     });
   </script>
-  <!-- 在合适位置添加弹窗HTML结构，比如在</body>标签前 -->
-<div id="noticeModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden w-300 h-300">
-  <div class="bg-white p-8 rounded-lg">
-    <h2 class="text-2xl font-bold mb-4">最新公告</h2>
-    <p>这是测试文案</p>
-    <button id="closeNoticeModal" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">关闭</button>
-  </div>
-</div>
+  
+<div id="noticeModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white p-8 rounded-lg">
+        <h2 class="text-2xl font-bold mb-4">最新公告</h2>
+        <p>这里填写公告具体内容</p>
+        <button id="closeNoticeModal" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">关闭</button>
+    </div>
+</div> 
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const noticeIconBtn = document.getElementById('noticeIconBtn');
+        const noticeModal = document.getElementById('noticeModal');
+        const closeButton = document.getElementById('closeNoticeModal');
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const noticeLink = document.getElementById('noticeLinkId')
-    const noticeModal = document.getElementById('noticeModal');
-    const closeButton = document.getElementById('closeNoticeModal');
+        noticeIconBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            noticeModal.classList.remove('hidden');
+        });
 
-    noticeLink.addEventListener('click', function (e) {
-      e.preventDefault();
-      noticeModal.classList.remove('hidden');
+        closeButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            noticeModal.classList.add('hidden');
+        });
     });
-
-    closeButton.addEventListener('click', function () {
-      noticeModal.classList.add('hidden');
-    });
-  });
 </script>
+  
 </body>
 </html>
+
 
 
 
