@@ -176,14 +176,30 @@
   </script>
   <!-- 导航栏 -->
   <header id="navbar" class="fixed w-full bg-cream/90 backdrop-blur-sm z-50 transition-all duration-300">
-    <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-      <a href="#" class="flex items-center space-x-2">
-  <img src="logo.jpg" alt="时养阁logo" class="h-10 w-auto card-img">
-        <span class="text-primary text-3xl font-serif font-bold">时养阁</span>
-      </a>
-      
+    <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+      <div class="flex items-center justify-between w-full md:w-auto">
+        <a href="#" class="flex items-center gap-2">
+          <img src="logo.jpg" alt="时养阁logo" class="h-10 w-auto card-img">
+          <span class="text-primary text-2xl md:text-3xl font-serif font-bold whitespace-nowrap">时养阁</span>
+        </a>
+        <div class="flex items-center gap-3 md:hidden">
+          <button id="noticeIconBtn" class="hover:text-primary transition-colors">
+            <i class="fa fa-bell fa-lg"></i>
+          </button>
+          <button id="userAccountToggle" class="hover:text-primary transition-colors">
+            <i class="fa fa-user text-xl"></i>
+          </button>
+          <button id="cartToggle" class="relative hover:text-primary transition-colors">
+            <i class="fa fa-shopping-cart text-xl"></i>
+            <span id="cartCount" class="cart-bubble">0</span>
+          </button>
+          <button id="mobileMenuToggle" class="hover:text-primary transition-colors">
+            <i class="fa fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
       <!-- 桌面端导航 -->
-      <nav class="hidden md:flex items-center space-x-8">        
+      <nav class="hidden md:flex items-center space-x-8">
         <a href="#home" class="font-medium hover:text-primary transition-colors">首页</a>
         <a href="#products" class="font-medium hover:text-primary transition-colors">产品</a>
         <a href="#seasons" class="font-medium hover:text-primary transition-colors">顺时食养</a>
@@ -191,14 +207,10 @@
         <a href="#testimonials" class="font-medium hover:text-primary transition-colors">顾客评价</a>
         <a href="#contact" class="font-medium hover:text-primary transition-colors">联系我们</a>
       </nav>
-      
-      <!-- 用户功能区 -->
-      <div class="flex items-center space-x-6">
-        <button id="noticeIconBtn" class="relative hover:text-primary transition-colors">
+      <!-- 桌面端用户功能区 -->
+      <div class="hidden md:flex items-center space-x-6">
+        <button id="noticeIconBtn" class="hover:text-primary transition-colors">
           <i class="fa fa-bell fa-lg"></i>
-        </button>
-        <button id="searchBtn" class="hover:text-primary transition-colors">
-          <i class="fa fa-search text-xl"></i>
         </button>
         <button id="userAccountToggle" class="hover:text-primary transition-colors">
           <i class="fa fa-user text-xl"></i>
@@ -206,9 +218,6 @@
         <button id="cartToggle" class="relative hover:text-primary transition-colors">
           <i class="fa fa-shopping-cart text-xl"></i>
           <span id="cartCount" class="cart-bubble">0</span>
-        </button>
-        <button id="mobileMenuToggle" class="md:hidden hover:text-primary transition-colors">
-          <i class="fa fa-bars text-xl"></i>
         </button>
       </div>
     </div>
